@@ -30,8 +30,10 @@ export class CurrencyLayer extends Quoter {
 
     // update last trades
     for (const symbol of Object.keys(response.quotes)) {
-      const convertedSymbol = symbol.replace('USD', 'USD/')
-      this.setPrice(convertedSymbol === 'USD/XDR' ? 'USD/SDR' : convertedSymbol, num(response.quotes[symbol]))
+      const convertedSymbol = symbol.replace('USD', '') + '/USD'
+      const convertedPrice = num(1).dividedBy(num(response.quotes[symbol]))
+
+      this.setPrice(convertedSymbol === 'XDR/USD' ? 'SDR/USD' : convertedSymbol, convertedPrice)
     }
   }
 
