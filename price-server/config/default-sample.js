@@ -623,5 +623,21 @@ module.exports = {
       interval: 30 * 1000,
       timeout: 5000,
     },
+    currencylayer: {
+      symbols: fiatSymbols,
+      interval: 60 * 1000,
+      timeout: 5000,
+      // https://currencylayer.com/product
+      // recommend: business subscription(60second Updates): $79.99/month
+      apiKey: '', // necessary
+    },
+    alphavantage: {
+      symbols: fiatSymbols,
+      interval: 60 * 1000,
+      timeout: 5000,
+      // https://www.alphavantage.co/premium/
+      // recommend: 120 API request per minute: $49.99/month
+      apiKey: '', // necessary
+    },
   },
 }

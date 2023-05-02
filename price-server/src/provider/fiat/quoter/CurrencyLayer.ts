@@ -16,7 +16,7 @@ export class CurrencyLayer extends Quoter {
     const params = {
       access_key: this.options.apiKey,
       source: 'USD',
-      currencies: this.symbols.map((symbol) => (symbol === 'USD/SDR' ? 'XDR' : symbol.replace('USD/', ''))).join(','),
+      currencies: this.symbols.map((symbol) => (symbol === 'SDR/USD' ? 'XDR' : symbol.replace('/USD', ''))).join(','),
     }
 
     const response: Response = await fetch(`https://apilayer.net/api/live?${toQueryString(params)}`, {
