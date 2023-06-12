@@ -624,7 +624,7 @@ module.exports = {
       timeout: 5000,
     },
     // https://currencylayer.com/product
-    // recommend: Enterprise+ (60second Updates): $99.99/month
+    // recommend: Enterprise (60second Updates): $59.99/month
     currencylayer: {
       symbols: fiatSymbols,
       interval: 60 * 1000,
