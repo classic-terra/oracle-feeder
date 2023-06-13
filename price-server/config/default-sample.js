@@ -604,7 +604,7 @@ module.exports = {
     },
   },
   fiatProvider: {
-    fallbackPriority: ['exchangerate', 'frankfurter', 'fer', "currencylayer", "fixer"],
+    fallbackPriority: ['exchangerate', 'frankfurter', 'fer', "fastforex", "currencylayer", "fixer"],
     // https://exchangerate.host/
     exchangerate: {
       symbols: fiatSymbols,
@@ -622,6 +622,14 @@ module.exports = {
       symbols: fiatSymbols.filter((f) => !f.includes('SDR')),
       interval: 30 * 1000,
       timeout: 5000,
+    },
+    // https://fastforex.readme.io
+    // price: $9/month
+    fastforex: {
+      symbols: fiatSymbols,
+      interval: 60 * 1000,
+      timeout: 5000,
+      apikey: '', // necessary
     },
     // https://currencylayer.com/product
     // recommend: Enterprise (60second Updates): $59.99/month
