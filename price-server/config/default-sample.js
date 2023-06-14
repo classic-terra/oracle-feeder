@@ -604,7 +604,7 @@ module.exports = {
     },
   },
   fiatProvider: {
-    fallbackPriority: ['exchangerate', 'frankfurter', 'fer'],
+    fallbackPriority: ['exchangerate', 'frankfurter', 'fer', "currencylayer", "fixer"],
     // https://exchangerate.host/
     exchangerate: {
       symbols: fiatSymbols,
@@ -623,20 +623,28 @@ module.exports = {
       interval: 30 * 1000,
       timeout: 5000,
     },
+    // https://currencylayer.com/product
+    // recommend: Enterprise (60second Updates): $59.99/month
     currencylayer: {
       symbols: fiatSymbols,
       interval: 60 * 1000,
       timeout: 5000,
-      // https://currencylayer.com/product
-      // recommend: business subscription(60second Updates): $79.99/month
       apiKey: '', // necessary
     },
+    // https://www.alphavantage.co/premium/
+    // recommend: 120 API request per minute: $49.99/month
     alphavantage: {
       symbols: fiatSymbols,
       interval: 60 * 1000,
       timeout: 5000,
-      // https://www.alphavantage.co/premium/
-      // recommend: 120 API request per minute: $49.99/month
+      apiKey: '', // necessary
+    },
+    // https://fixer.io/product
+    // recommend: professional plus(60second Updates): $99.99/month
+    fixer: {
+      symbols: fiatSymbols,
+      interval: 60 * 1000,
+      timeout: 5000,
       apiKey: '', // necessary
     },
   },
