@@ -604,7 +604,7 @@ module.exports = {
     },
   },
   fiatProvider: {
-    fallbackPriority: ['exchangerate', 'frankfurter', 'fer', "fastforex", "currencylayer", "fixer"],
+    fallbackPriority: ['exchangerate', 'frankfurter', 'fer', "fastforex", "currencylayer", "fixer", "alphavantage"],
     // https://exchangerate.host/
     exchangerate: {
       symbols: fiatSymbols,
