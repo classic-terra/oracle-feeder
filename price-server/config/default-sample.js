@@ -640,7 +640,7 @@ module.exports = {
       apiKey: '', // necessary
     },
     // https://www.alphavantage.co/premium/
-    // recommend: 120 API request per minute: $49.99/month
+    // recommend: 150 API request per minute: $99.99/month
     alphavantage: {
       symbols: fiatSymbols,
       interval: 60 * 1000,
