@@ -81,6 +81,9 @@ function calculateSDR(prices: Price[], sdrBasket: string): Price | undefined {
 
   // check if all prices from the basket are available
   for (const denom of Object.keys(sdrBasket)) {
+    if (denom === 'USD') {
+      continue
+    }
     if (!prices.find((p) => p.denom === denom)) {
       logger.error(`getPrices: price for ${denom} not found`)
       return undefined
@@ -92,7 +95,7 @@ function calculateSDR(prices: Price[], sdrBasket: string): Price | undefined {
 
   try {
     sdrPrice = Object.entries(sdrBasket).reduce((acc, [denom, weight]) => {
-      const price = prices.find((p) => p.denom === denom)
+      const price = denom === 'USD' ? { price: '1.0' } : prices.find((p) => p.denom === denom)
       if (!price) {
         throw new Error(`price for ${denom} not found`)
       }
