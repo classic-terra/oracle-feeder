@@ -3,6 +3,7 @@ import { PriceBySymbol, Provider, ProviderOptions } from 'provider/base'
 import * as logger from 'lib/logger'
 import { CurrencyLayer, AlphaVantage, Fixer, ExchangeRate, Fer, Frankfurter, Fastforex } from './quoter'
 import BigNumber from 'bignumber.js'
+import { getBaseCurrency } from 'lib/currency'
 
 class FiatProvider extends Provider {
   constructor(options: ProviderOptions) {
@@ -39,12 +40,18 @@ class FiatProvider extends Provider {
       return undefined
     }
 
+    const priceList = Object.keys(prices).map((symbol) => ({
+      denom: getBaseCurrency(symbol),
+      price: prices[symbol].toFixed(8),
+    }))
+
     // check if all prices from the basket are available
     for (const denom of Object.keys(config.sdrBasket)) {
       if (denom === 'USD') {
         continue
       }
-      if (!prices[denom]) {
+
+      if (!priceList.find((p) => p.denom === denom)) {
         logger.error(`calculateSDR price for ${denom} not found`)
         return undefined
       }
@@ -55,7 +62,7 @@ class FiatProvider extends Provider {
 
     try {
       sdrPrice = Object.entries(config.sdrBasket).reduce((acc, [denom, weight]: [string, string]) => {
-        const price = denom === 'USD' ? BigNumber(1) : prices[denom] || BigNumber(0)
+        const price = denom === 'USD' ? BigNumber(1) : priceList.find((p) => p.denom === denom)?.price || BigNumber(0)
         if (!price) {
           throw new Error(`price for ${denom} not found`)
         }
