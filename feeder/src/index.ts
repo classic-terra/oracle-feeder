@@ -64,12 +64,6 @@ function registerCommands(parser: ArgumentParser): void {
     defaultValue: `voter`,
   })
 
-  voteCommand.addArgument(['-s', '--sdr-basket'], {
-    help: `SDR basket information`,
-    dest: `sdrBasket`,
-    defaultValue: '',
-  })
-
   // Updating Key command
   const keyCommand = subparsers.addParser(`add-key`, { addHelp: true })
 
@@ -128,16 +122,6 @@ async function main(): Promise<void> {
     args.validators =
       args.validators || (process.env.ORACLE_FEEDER_VALIDATORS && process.env.ORACLE_FEEDER_VALIDATORS.split(','))
     args.keyName = process.env.ORACLE_FEEDER_KEY_NAME ? process.env.ORACLE_FEEDER_KEY_NAME : args.keyName
-
-    args.sdrBasket = args.sdrBasket || process.env.ORACLE_SDR_BASKET || ''
-    // convert basket data into json object
-    if (args.sdrBasket !== '') {
-      args.sdrBasket = args.sdrBasket.split(',').reduce((acc: { string: string }, curr: string) => {
-        const [key, value] = curr.split(':')
-        acc[key] = value
-        return acc
-      }, {})
-    }
 
     await vote(args)
   } else if (args.subparser_name === `add-key`) {
