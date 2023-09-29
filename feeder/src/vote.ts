@@ -88,7 +88,7 @@ function calculateSDR(prices: Price[], sdrBasket: string): Price | undefined {
   }
 
   // calculate SDR price
-  let sdrPrice: BigNumber = undefined
+  let sdrPrice: BigNumber | undefined = undefined
 
   try {
     sdrPrice = Object.entries(sdrBasket).reduce((acc, [denom, weight]) => {
