@@ -138,6 +138,11 @@ async function getPrices(sources: string[], sdrBasket: string): Promise<Price[]>
     return []
   }
 
+  if (results[0].data.prices.find((p) => p.denom === 'SDR')) {
+    logger.info(`[VOTE] SDR price found from price server`)
+    return results[0].data.prices
+  }
+
   const sdr = calculateSDR(results[0].data.prices, sdrBasket)
   logger.info(`[VOTE] SDR price: ${sdr?.price}`)
 
