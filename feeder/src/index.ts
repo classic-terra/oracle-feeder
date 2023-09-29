@@ -132,7 +132,7 @@ async function main(): Promise<void> {
     args.sdrBasket = args.sdrBasket || process.env.ORACLE_SDR_BASKET || ''
     // convert basket data into json object
     if (args.sdrBasket !== '') {
-      args.sdrBasket = args.sdrBasket.split(',').reduce((acc: string, curr: string) => {
+      args.sdrBasket = args.sdrBasket.split(',').reduce((acc: { string: string }, curr: string) => {
         const [key, value] = curr.split(':')
         acc[key] = value
         return acc
