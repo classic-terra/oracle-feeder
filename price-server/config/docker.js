@@ -57,4 +57,14 @@ module.exports = {
       apiKey: process.env.FIAT_PROVIDER_ALPHA_VANTAGE_API_KEY || '', // necessary
     },
   },
+  sdrBasket: process.env.SDR_BASKET
+    ? JSON.parse(process.env.SDR_BASKET)
+    : {
+        // to calculate SDR value if not available from fiat providers
+        USD: '0.57813',
+        EUR: '0.37379',
+        JPY: '13.452',
+        CNY: '1.0993',
+        GBP: '0.080870',
+      },
 }
