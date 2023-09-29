@@ -97,11 +97,11 @@ class FiatProvider extends Provider {
       }
     }
 
-    if (!this.priceBySymbol['SDR']) {
+    if (!this.priceBySymbol['SDR/USD']) {
       logger.info(`No SDR price found, falling back to calculation.`)
       const sdrPrice = this.calculateSDR(this.priceBySymbol)
       if (sdrPrice && sdrPrice.isNaN() === false) {
-        this.priceBySymbol['SDR'] = sdrPrice
+        this.priceBySymbol['SDR/USD'] = sdrPrice
       } else {
         logger.error(`No SDR price found, calculation failed.`)
       }
