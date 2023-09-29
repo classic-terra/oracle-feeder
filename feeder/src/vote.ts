@@ -139,6 +139,8 @@ async function getPrices(sources: string[], sdrBasket: string): Promise<Price[]>
   }
 
   const sdr = calculateSDR(results[0].data.prices, sdrBasket)
+  logger.info(`[VOTE] SDR price: ${sdr?.price}`)
+
   if (sdr) {
     results[0].data.prices.push(sdr)
   }
