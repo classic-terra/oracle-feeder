@@ -74,7 +74,46 @@ interface Price {
   price: string
 }
 
-async function getPrices(sources: string[]): Promise<Price[]> {
+function calculateSDR(prices: Price[], sdrBasket: string): Price | undefined {
+  if (!sdrBasket) {
+    return undefined
+  }
+
+  // check if all prices from the basket are available
+  for (const denom of Object.keys(sdrBasket)) {
+    if (!prices.find((p) => p.denom === denom)) {
+      logger.error(`getPrices: price for ${denom} not found`)
+      return undefined
+    }
+  }
+
+  // calculate SDR price
+  let sdrPrice: BigNumber = undefined
+
+  try {
+    sdrPrice = Object.entries(sdrBasket).reduce((acc, [denom, weight]) => {
+      const price = prices.find((p) => p.denom === denom)
+      if (!price) {
+        throw new Error(`price for ${denom} not found`)
+      }
+      return acc.plus(new BigNumber(price.price).times(weight))
+    }, new BigNumber(0))
+  } catch (err) {
+    logger.error(`getPrices: error calculating SDR price: ${err.message}`)
+    return undefined
+  }
+
+  if (!sdrPrice) {
+    return undefined
+  }
+
+  return {
+    denom: 'SDR',
+    price: sdrPrice.toString(),
+  }
+}
+
+async function getPrices(sources: string[], sdrBasket: string): Promise<Price[]> {
   const results = await Bluebird.some(
     sources.map((s) => ax.get(s)),
     1
@@ -97,6 +136,11 @@ async function getPrices(sources: string[]): Promise<Price[]> {
 
   if (!results.length) {
     return []
+  }
+
+  const sdr = calculateSDR(results[0].data.prices, sdrBasket)
+  if (sdr) {
+    results[0].data.prices.push(sdr)
   }
 
   return results[0].data.prices
@@ -189,7 +233,7 @@ export async function processVote(
 
   // Print timestamp before start
   logger.info(`[VOTE] Requesting prices from price server ${args.dataSourceUrl.join(',')}`)
-  const _prices = await getPrices(args.dataSourceUrl)
+  const _prices = await getPrices(args.dataSourceUrl, args.sdrBasket)
 
   // Removes non-whitelisted currencies and abstain for not fetched currencies
   const prices = preparePrices(_prices, oracleWhitelist)
@@ -302,6 +346,7 @@ interface VoteArgs {
   password: string
   keyPath: string
   keyName: string
+  sdrBasket: string
 }
 
 function buildLCDClientConfig(args: VoteArgs, lcdIndex: number): Record<string, LCDClientConfig> {
