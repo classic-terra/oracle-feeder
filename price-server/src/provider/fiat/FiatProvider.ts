@@ -30,21 +30,12 @@ class FiatProvider extends Provider {
 
     await super.initialize()
 
-    const isUpdated = await this.tick(Date.now())
-
-    if (isUpdated && !this.priceBySymbol['SDR']) {
-      logger.info(`No SDR price found, falling back to calculation.`)
-      const sdrPrice = this.calculateSDR(this.priceBySymbol)
-      if (sdrPrice && sdrPrice.isNaN() === false) {
-        this.priceBySymbol['SDR'] = sdrPrice
-      } else {
-        logger.error(`No SDR price found, calculation failed.`)
-      }
-    }
+    await this.tick(Date.now())
   }
 
   protected calculateSDR(prices: PriceBySymbol): BigNumber | undefined {
     if (!config.sdrBasket) {
+      logger.error(`calculateSDR: config.sdrBasket not found`)
       return undefined
     }
 
@@ -76,9 +67,11 @@ class FiatProvider extends Provider {
     }
 
     if (!sdrPrice) {
+      logger.error(`getPrices: error calculating SDR price`)
       return undefined
     }
 
+    logger.info(`getPrices: calculated SDR price: ${sdrPrice.toString()}`)
     return sdrPrice
   }
 
@@ -94,6 +87,16 @@ class FiatProvider extends Provider {
           this.priceBySymbol[symbol] = price
           break
         }
+      }
+    }
+
+    if (!this.priceBySymbol['SDR']) {
+      logger.info(`No SDR price found, falling back to calculation.`)
+      const sdrPrice = this.calculateSDR(this.priceBySymbol)
+      if (sdrPrice && sdrPrice.isNaN() === false) {
+        this.priceBySymbol['SDR'] = sdrPrice
+      } else {
+        logger.error(`No SDR price found, calculation failed.`)
       }
     }
   }
