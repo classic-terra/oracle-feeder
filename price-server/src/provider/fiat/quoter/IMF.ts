@@ -11,7 +11,7 @@ async function fetchQuote() {
 
   const doc = parse(text)
   const tds = doc.querySelectorAll('.tightest td')
-  const idx = tds.findIndex((el) => el.structuredText === ' U.S.$1.00 = SDR')
+  const idx = tds.findIndex((el) => el.structuredText === ' SDR1 = US$')
 
   if (idx === -1) {
     throw new Error('cannot find SDR/USD element from HTML document')
@@ -21,7 +21,7 @@ async function fetchQuote() {
   return num(tds[idx + 1].structuredText.split(' ')[1])
 }
 
-// fetchQuote().then(console.log).catch(console.error) // For test
+fetchQuote().then(console.log).catch(console.error) // For test
 
 export class IMF extends Quoter {
   private async updateLastPrice(symbol: string): Promise<void> {
