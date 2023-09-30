@@ -21,7 +21,7 @@ async function fetchQuote() {
   return num(tds[idx + 1].structuredText.split(' ')[1])
 }
 
-fetchQuote().then(console.log).catch(console.error) // For test
+// fetchQuote().then(console.log).catch(console.error) // For test
 
 export class IMF extends Quoter {
   private async updateLastPrice(symbol: string): Promise<void> {
