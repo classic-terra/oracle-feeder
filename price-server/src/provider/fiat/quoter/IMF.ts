@@ -17,7 +17,7 @@ async function fetchQuote() {
     throw new Error('cannot find SDR/USD element from HTML document')
   }
 
-  // sample format: ' 0.760470 2'
+  // sample format: ' 1.32149 2'
   return num(tds[idx + 1].structuredText.split(' ')[1])
 }
 
