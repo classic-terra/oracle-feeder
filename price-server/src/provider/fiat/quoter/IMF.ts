@@ -24,15 +24,11 @@ async function fetchQuote() {
 // fetchQuote().then(console.log).catch(console.error) // For test
 
 export class IMF extends Quoter {
-  private async updateLastPrice(symbol: string): Promise<void> {
-    if (symbol === 'SDR/USD') {
-      this.setPrice(symbol, await fetchQuote())
-    }
-  }
-
   protected async update(): Promise<boolean> {
-    for (const symbol of this.symbols) {
-      await this.updateLastPrice(symbol).catch(errorHandler)
+    if (this.symbols.indexOf('SDR/USD') !== -1) {
+      await fetchQuote()
+        .then((rate) => this.setPrice('SDR/USD', rate))
+        .catch(errorHandler)
     }
 
     return true
