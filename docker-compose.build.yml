@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
    oracle-price-server:
-     image: public.ecr.aws/classic-terra/oracle-price-server
+     image: ghcr.io/classic-terra/oracle-price-server
      platform: linux/amd64
      build: 
       context: price-server
@@ -10,7 +10,7 @@ services:
       labels:
         - "Contains everything needed to run the Oracle price server"
    oracle-feeder:
-     image: public.ecr.aws/classic-terra/oracle-feeder
+     image: ghcr.io/classic-terra/oracle-feeder
      platform: linux/amd64
      build: 
        context: feeder

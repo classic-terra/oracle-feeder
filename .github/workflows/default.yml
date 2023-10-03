@@ -6,6 +6,10 @@ on:
     branches:
       - main
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}
+
 jobs:
   integration:
     runs-on: ubuntu-latest
@@ -21,8 +25,11 @@ jobs:
   delivery:
     runs-on: ubuntu-latest
     needs: integration
+    permissions:
+      contents: read
+      packages: write
 
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v2
@@ -38,24 +45,31 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ap-northeast-2
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push docker image to AWS ECR
+      - name: Build, tag, and push docker image for price-server to GHCR
         uses: docker/build-push-action@v2
         with:
           context: ./price-server
           push: true
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/oracle-price-server:${{ github.sha }}
-            ${{ steps.login-ecr.outputs.registry }}/oracle-price-server:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/oracle-price-server:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/oracle-price-server:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+    
+      - name: Build, tag, and push docker image for feeder to GHCR
+        uses: docker/build-push-action@v2
+        with:
+          context: ./feeder
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/oracle-feeder:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/oracle-feeder:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
