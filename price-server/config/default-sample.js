@@ -578,6 +578,7 @@ module.exports = {
       apiKey: '', // necessary
     },
   },
+  forceInternalSdr: false, // force to use internal SDR calculation, even if fiat providers are available
   sdrBasket: {
     // to calculate SDR value if not available from fiat providers
     USD: '0.57813',

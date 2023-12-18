@@ -57,6 +57,7 @@ module.exports = {
       apiKey: process.env.FIAT_PROVIDER_ALPHA_VANTAGE_API_KEY || '', // necessary
     },
   },
+  forceInternalSdr: true, // force to use internal SDR calculation, even if fiat providers are available
   sdrBasket: process.env.SDR_BASKET
     ? JSON.parse(process.env.SDR_BASKET)
     : {
