@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { num } from './num'
 
-export function average(array: BigNumber[], threshold = 0.1): BigNumber {
+export function average(array: BigNumber[], removeOutliers = false, threshold = 0.1): BigNumber {
   if (!array || !array.length) {
     throw new Error('empty array')
   }
@@ -10,7 +10,7 @@ export function average(array: BigNumber[], threshold = 0.1): BigNumber {
     return array[0]
   }
 
-  if (array.length >= 3) {
+  if (removeOutliers === true && array.length >= 3) {
     // remove outliers only if we have enough entries
     // i.e. remove values that are 10% or more different from the median
     const sortedArray = array.sort((a, b) => a.minus(b).toNumber())
@@ -19,7 +19,14 @@ export function average(array: BigNumber[], threshold = 0.1): BigNumber {
       const dist = num(1.0).minus(x.dividedBy(median)).abs()
 
       // 10% threshold
-      return dist.isLessThanOrEqualTo(threshold)
+      if (dist.isLessThanOrEqualTo(threshold)) {
+        return true
+      } else {
+        console.error(
+          `Skipping outlier ${x.toString()} with distance ${dist.toString()} from median ${median.toString()}`
+        )
+        return false
+      }
     })
     array = filteredArray
   }
