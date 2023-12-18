@@ -19,14 +19,7 @@ export function average(array: BigNumber[], threshold = 0.1): BigNumber {
       const dist = num(1.0).minus(x.dividedBy(median)).abs()
 
       // 10% threshold
-      if (dist.isLessThanOrEqualTo(threshold)) {
-        return true
-      } else {
-        console.error(
-          `Removing price ${x} due to being an outliers (median: ${median})`,
-          array.map((p) => p.toString())
-        )
-      }
+      return dist.isLessThanOrEqualTo(threshold)
     })
     array = filteredArray
   }
