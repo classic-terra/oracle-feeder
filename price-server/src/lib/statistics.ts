@@ -1,13 +1,27 @@
 import { BigNumber } from 'bignumber.js'
 import { num } from './num'
 
-export function average(array: BigNumber[]): BigNumber {
+export function average(array: BigNumber[], threshold = 0.1): BigNumber {
   if (!array || !array.length) {
     throw new Error('empty array')
   }
 
   if (array.length === 1) {
     return array[0]
+  }
+
+  if (array.length >= 3) {
+    // remove outliers only if we have enough entries
+    // i.e. remove values that are 10% or more different from the median
+    const sortedArray = array.sort((a, b) => a.minus(b).toNumber())
+    const median = sortedArray[Math.floor(sortedArray.length / 2)]
+    const filteredArray = sortedArray.filter((x) => {
+      const dist = num(1.0).minus(x.dividedBy(median)).abs()
+
+      // 10% threshold
+      return dist.isLessThanOrEqualTo(threshold)
+    })
+    array = filteredArray
   }
 
   return array.reduce((a, b) => a.plus(b)).dividedBy(num(array.length))
@@ -62,6 +76,7 @@ export function hasOutliers(nums: BigNumber[], threshold = 0.1): boolean {
     return false
   }
 
+  let outliers = 0
   const values = nums.slice().sort((a, b) => a.minus(b).toNumber())
 
   for (let i = 0; i < values.length; i += 1) {
@@ -71,8 +86,12 @@ export function hasOutliers(nums: BigNumber[], threshold = 0.1): boolean {
 
     // 3% threshold
     if (dist.isGreaterThanOrEqualTo(threshold)) {
-      return true
+      outliers += 1
     }
+  }
+
+  if (outliers > nums.length / 3) {
+    return true
   }
 
   return false
