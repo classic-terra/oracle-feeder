@@ -208,7 +208,7 @@ export async function processVote(
     memo: `${packageInfo.name}@${packageInfo.version}`,
   })
 
-  const res = await client.tx.broadcastBlock(tx).catch((err) => {
+  const res = await client.tx.broadcastSync(tx).catch((err) => {
     logger.error(`broadcast error: ${err.message} ${tx.toData(client.config.isClassic)}`)
     throw err
   })
