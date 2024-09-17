@@ -9,16 +9,27 @@ const SDR_VALUATION_URL = 'https://www.imf.org/external/np/fin/data/rms_sdrv.asp
 async function fetchQuote() {
   const text = await fetch(SDR_VALUATION_URL).then((res) => res.text())
 
-  const doc = parse(text)
-  const tds = doc.querySelectorAll('.tightest td')
-  const idx = tds.findIndex((el) => el.structuredText === ' SDR1 = US$')
+  let idx = -1
+  const tables = text.match(/<table[^>]*>([\s\S]*?)<\/table>/gi) || []
+  console.log('Tables:', tables.length) // Debugging line
+  for (const table of tables) {
+    const doc = parse(table.trim())
+    const tds = doc.querySelectorAll('td')
 
-  if (idx === -1) {
-    throw new Error('cannot find SDR/USD element from HTML document')
+    console.log('TDs:', 'cnt', tds.length) // Debugging line
+    idx = tds.findIndex((el) => {
+      console.log('ST', el.structuredText)
+      return el.structuredText.trim() === 'SDR1 = US$'
+    })
+
+    if (idx !== -1) {
+      // sample format: ' 1.32149 2'
+      return num(tds[idx + 1].structuredText.split(' ')[1])
+    }
   }
 
-  // sample format: ' 1.32149 2'
-  return num(tds[idx + 1].structuredText.split(' ')[1])
+  // nothing found
+  throw new Error('cannot find SDR/USD element from HTML document')
 }
 
 // fetchQuote().then(console.log).catch(console.error) // For test
