@@ -204,12 +204,12 @@ export async function processVote(
   logger.info(`[PREVOTE] msg: ${JSON.stringify(msgs)}\n`)
   const tx = await wallet.createAndSignTx({
     msgs,
-    fee: new Fee((1 + msgs.length) * 50000, []),
+    fee: new Fee((1 + msgs.length) * 100_000, []),
     memo: `${packageInfo.name}@${packageInfo.version}`,
   })
 
-  const res = await client.tx.broadcastBlock(tx).catch((err) => {
-    logger.error(`broadcast error: ${err.message} ${tx.toData()}`)
+  const res = await client.tx.broadcastSync(tx).catch((err) => {
+    logger.error(`broadcast error: ${err.message} ${tx.toData(client.config.isClassic)}`)
     throw err
   })
 

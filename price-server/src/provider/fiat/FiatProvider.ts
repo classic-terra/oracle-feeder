@@ -1,7 +1,7 @@
 import * as config from 'config'
 import { PriceBySymbol, Provider, ProviderOptions } from 'provider/base'
 import * as logger from 'lib/logger'
-import { CurrencyLayer, AlphaVantage, Fixer, ExchangeRate, Fer, Frankfurter, Fastforex } from './quoter'
+import { CurrencyLayer, AlphaVantage, Fixer, ExchangeRate, Fer, Frankfurter, Fastforex, IMF } from './quoter'
 import BigNumber from 'bignumber.js'
 import { getBaseCurrency } from 'lib/currency'
 
@@ -27,6 +27,7 @@ class FiatProvider extends Provider {
       name === 'frankfurter' && this.quoters.push(new Frankfurter(option))
       name === 'exchangerate' && this.quoters.push(new ExchangeRate(option))
       name === 'fastforex' && this.quoters.push(new Fastforex(option))
+      name === 'imf' && this.quoters.push(new IMF(option))
     }
 
     await super.initialize()

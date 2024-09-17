@@ -3,7 +3,7 @@ version: '3.8'
 services:
   oracle-price-server:
     #Enable this image if you want to use the docker-compose CLI to build from the local typescript source
-    image: public.ecr.aws/classic-terra/oracle-price-server
+    image: ghcr.io/classic-terra/oracle-price-server
     restart: always
     ports:
       - "8532:8532"
@@ -11,7 +11,7 @@ services:
       - terra-classic
   oracle-feeder:
     #Enable this image if you want to use the docker-compose CLI to build from the local typescript source
-    image: public.ecr.aws/classic-terra/oracle-feeder
+    image: ghcr.io/classic-terra/oracle-feeder
     environment:
       - ORACLE_FEEDER_DATA_SOURCE_URL=http://oracle-price-server:8532/latest
       - ORACLE_FEEDER_PASSWORD=password
