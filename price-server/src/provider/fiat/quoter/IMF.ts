@@ -11,14 +11,11 @@ async function fetchQuote() {
 
   let idx = -1
   const tables = text.match(/<table[^>]*>([\s\S]*?)<\/table>/gi) || []
-  console.log('Tables:', tables.length) // Debugging line
   for (const table of tables) {
     const doc = parse(table.trim())
     const tds = doc.querySelectorAll('td')
 
-    console.log('TDs:', 'cnt', tds.length) // Debugging line
     idx = tds.findIndex((el) => {
-      console.log('ST', el.structuredText)
       return el.structuredText.trim() === 'SDR1 = US$'
     })
 
