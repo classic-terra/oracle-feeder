@@ -76,7 +76,7 @@ export default class PricesProvider {
           return {}
         } else {
           // ... return a unique object with the average
-          return { [key]: average(prices) }
+          return { [key]: average(prices, true) }
         }
       })
       // Transform the array of objects to a single object
